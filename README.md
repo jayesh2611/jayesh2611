@@ -44,5 +44,5 @@
 </div>
 <br>
 <div align="center">
-    <img src="https://github.com/ujjwaldethe/ujjwaldethe/blob/output/github-snake-dark.svg" alt="snake gif">
+    <img src="https://github.com/jayesh2611/jayesh2611/blob/main/.github/workflows/snake.yml" alt="snake gif">
 </div>
