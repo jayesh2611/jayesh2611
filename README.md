@@ -1,6 +1,9 @@
 ![MasterHead](https://mir-s3-cdn-cf.behance.net/project_modules/fs/54b6c068097599.5b50bca476b9b.gif)
 
-<h1 align="center">Hi 👋, I'm Jayesh Patil</h1>
+<h1 align="center">
+    <img src="https://readme-typing-svg.herokuapp.com/?font=Righteous&size=35&center=true&vCenter=true&width=500&height=70&duration=4000&lines=Hi+There!+👋;+I'm+Jayesh+Patil!;" />
+</h1>
+
 <h3 align="center">A passionate ethical hacker from India</h3>
 
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=jayesh2611&label=Profile%20views&color=0e75b6&style=flat" alt="jayesh2611" /> </p>
