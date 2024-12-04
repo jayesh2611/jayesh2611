@@ -4,6 +4,7 @@
 <h3 align="center">A passionate ethical hacker from India</h3>
 
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=jayesh2611&label=Profile%20views&color=0e75b6&style=flat" alt="jayesh2611" /> </p>
+<img align="right" alt="Coding" width="460" src="https://raw.githubusercontent.com/ujjwaldethe/ujjwaldethe/f97c2e325ae77615a50fb689eb84593f79407ba7/.github/workflows/coding.gif">
 
 
 
