@@ -1,46 +1,102 @@
-name: GitHub Snake Game
+import pygame
+import sys
 
-on:
-  # Run every day at midnight UTC
-  schedule:
-    - cron: "0 0 * * *"
+# Initialize Pygame
+pygame.init()
 
-  # Allow manual trigger
-  workflow_dispatch:
+# Screen settings
+WIDTH, HEIGHT = 600, 400
+CELL_SIZE = 20
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Snake Game")
 
-  # Run on push to main branch
-  push:
-    branches:
-      - main
+# Colors
+WHITE = (255, 255, 255)
+GREEN = (0, 200, 0)
+RED = (200, 0, 0)
+BLACK = (0, 0, 0)
 
-jobs:
-  generate:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+# Load GIF for end screen (Pygame only supports the first frame of GIFs)
+snake_gif = pygame.image.load("snake.gif")
 
-    steps:
-      # Step 1: Checkout the repository
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+# Snake and Food
+snake = [(100, 100), (120, 100), (140, 100)]
+direction = 'RIGHT'
+food = (300, 200)
+clock = pygame.time.Clock()
 
-      # Step 2: Generate the snake animations
-      - name: Generate GitHub Contributions Snake Animations
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            dist/github-snake.svg
-            dist/github-snake-dark.svg?palette=github-dark
-            dist/ocean.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+def move_snake(snake, direction):
+    x, y = snake[-1]
+    if direction == 'UP':
+        y -= CELL_SIZE
+    elif direction == 'DOWN':
+        y += CELL_SIZE
+    elif direction == 'LEFT':
+        x -= CELL_SIZE
+    elif direction == 'RIGHT':
+        x += CELL_SIZE
+    new_head = (x, y)
+    return new_head
 
-      # Step 3: Deploy to the 'output' branch
-      - name: Deploy to Output Branch
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: output
-          commit_message: "Update snake animation [skip ci]"
+def game_over_screen():
+    screen.fill(WHITE)
+    font = pygame.font.SysFont(None, 48)
+    text = font.render('Game Over!', True, RED)
+    screen.blit(text, (WIDTH//2 - text.get_width()//2, HEIGHT//3))
+    # Draw the GIF
+    gif_rect = snake_gif.get_rect(center=(WIDTH//2, HEIGHT//2 + 60))
+    screen.blit(snake_gif, gif_rect)
+    pygame.display.flip()
+    pygame.time.wait(3000)
+
+def main():
+    global direction, snake, food
+    running = True
+    while running:
+        screen.fill(BLACK)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP and direction != 'DOWN':
+                    direction = 'UP'
+                elif event.key == pygame.K_DOWN and direction != 'UP':
+                    direction = 'DOWN'
+                elif event.key == pygame.K_LEFT and direction != 'RIGHT':
+                    direction = 'LEFT'
+                elif event.key == pygame.K_RIGHT and direction != 'LEFT':
+                    direction = 'RIGHT'
+
+        new_head = move_snake(snake, direction)
+        # Check collisions
+        if (new_head in snake) or not (0 <= new_head[0] < WIDTH and 0 <= new_head[1] < HEIGHT):
+            game_over_screen()
+            running = False
+            continue
+
+        snake.append(new_head)
+        if new_head == food:
+            # Generate new food
+            import random
+            while True:
+                food = (random.randrange(0, WIDTH, CELL_SIZE), random.randrange(0, HEIGHT, CELL_SIZE))
+                if food not in snake:
+                    break
+        else:
+            snake.pop(0)
+
+        # Draw food
+        pygame.draw.rect(screen, RED, (*food, CELL_SIZE, CELL_SIZE))
+        # Draw snake
+        for pos in snake:
+            pygame.draw.rect(screen, GREEN, (*pos, CELL_SIZE, CELL_SIZE))
+
+        pygame.display.flip()
+        clock.tick(10)
+
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    main()
 
